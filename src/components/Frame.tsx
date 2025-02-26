@@ -22,7 +22,7 @@ import { createStore } from "mipd";
 import { Label } from "~/components/ui/label";
 import { PROJECT_TITLE } from "~/lib/constants";
 
-function StartCard() {
+function StartCard({ onStart, isLoading }: { onStart: () => void; isLoading: boolean }) {
   return (
     <Card>
       <CardHeader>
@@ -34,7 +34,7 @@ function StartCard() {
       <CardContent className="flex flex-col items-center">
         <button 
           className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-          onClick={handleStartQuiz}
+          onClick={onStart}
           disabled={isLoading}
         >
           Start Quiz
@@ -122,7 +122,7 @@ export default function Frame({ pageType = 'start' }: FrameProps) {
       });
 
       sdk.on("primaryButtonClicked", async () => {
-        if (pageType === 'start') {
+        if (pageType === 'start' && !isLoading) {
           await handleStartQuiz();
         }
       });
@@ -166,7 +166,7 @@ export default function Frame({ pageType = 'start' }: FrameProps) {
         <h1 className="text-2xl font-bold text-center mb-4 text-gray-700 dark:text-gray-300">
           {PROJECT_TITLE}
         </h1>
-        {pageType === 'start' && <StartCard />}
+        {pageType === 'start' && <StartCard onStart={handleStartQuiz} isLoading={isLoading} />}
       </div>
     </div>
   );
