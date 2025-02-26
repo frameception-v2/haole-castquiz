@@ -34,10 +34,8 @@ function StartCard() {
       <CardContent className="flex flex-col items-center">
         <button 
           className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-          onClick={() => {
-            // Will implement in Task 2
-            console.log("Start Quiz clicked");
-          }}
+          onClick={handleStartQuiz}
+          disabled={isLoading}
         >
           Start Quiz
         </button>
@@ -53,10 +51,24 @@ interface FrameProps {
 export default function Frame({ pageType = 'start' }: FrameProps) {
   const [isSDKLoaded, setIsSDKLoaded] = useState(false);
   const [context, setContext] = useState<Context.FrameContext>();
-
   const [added, setAdded] = useState(false);
-
   const [addFrameResult, setAddFrameResult] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleStartQuiz = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      // Will implement state management in Task 2
+      const nextUrl = `/question?state=${encodeURIComponent(
+        JSON.stringify({ currentQuestion: 0, score: 0, answers: [] })
+      )}`;
+      await sdk.actions.navigate(nextUrl);
+    } catch (error) {
+      console.error("Error starting quiz:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const addFrame = useCallback(async () => {
     try {
@@ -109,8 +121,10 @@ export default function Frame({ pageType = 'start' }: FrameProps) {
         console.log("notificationsDisabled");
       });
 
-      sdk.on("primaryButtonClicked", () => {
-        console.log("primaryButtonClicked");
+      sdk.on("primaryButtonClicked", async () => {
+        if (pageType === 'start') {
+          await handleStartQuiz();
+        }
       });
 
       console.log("Calling ready");
