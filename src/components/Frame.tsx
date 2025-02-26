@@ -22,23 +22,35 @@ import { createStore } from "mipd";
 import { Label } from "~/components/ui/label";
 import { PROJECT_TITLE } from "~/lib/constants";
 
-function ExampleCard() {
+function StartCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Welcome to the Frame Template</CardTitle>
+        <CardTitle>Farcaster Quiz Game</CardTitle>
         <CardDescription>
-          This is an example card that you can customize or remove
+          Test your knowledge of Farcaster posts!
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <Label>Place content in a Card here.</Label>
+      <CardContent className="flex flex-col items-center">
+        <button 
+          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          onClick={() => {
+            // Will implement in Task 2
+            console.log("Start Quiz clicked");
+          }}
+        >
+          Start Quiz
+        </button>
       </CardContent>
     </Card>
   );
 }
 
-export default function Frame() {
+interface FrameProps {
+  pageType?: 'start' | 'question' | 'score';
+}
+
+export default function Frame({ pageType = 'start' }: FrameProps) {
   const [isSDKLoaded, setIsSDKLoaded] = useState(false);
   const [context, setContext] = useState<Context.FrameContext>();
 
@@ -140,7 +152,7 @@ export default function Frame() {
         <h1 className="text-2xl font-bold text-center mb-4 text-gray-700 dark:text-gray-300">
           {PROJECT_TITLE}
         </h1>
-        <ExampleCard />
+        {pageType === 'start' && <StartCard />}
       </div>
     </div>
   );
